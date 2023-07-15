@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'angular-reactive-imperative';
+  programming:string = 'Imperative';
+
+  handleClick(e:string){
+    this.programming = e;
+  }
 }
