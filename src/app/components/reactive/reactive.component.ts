@@ -11,7 +11,7 @@ import { ClientsService } from 'src/app/services/clients.service';
 })
 export class ReactiveComponent {
   public searchField: FormControl;
-  public filteredClients$: Observable<Client[]>;
+  public filteredClients$: any;
   constructor(private clientService: ClientsService) {
     this.searchField = new FormControl('');
   }
@@ -22,19 +22,28 @@ export class ReactiveComponent {
     const searchTerm$ = this.searchField.valueChanges.pipe(
       startWith(this.searchField.value)
     );
-    // Combine the latest values from both streams into one stream
-    this.filteredClients$ = combineLatest([clients$, searchTerm$]).pipe(
-      map(([clients, searchTerm]) =>
-        clients.filter(
-          (client) =>
+    this.filteredClients$ = combineLatest(
+      [
+        // <<<< The mentioned overload expects an array not Observables as params.
+        this.clientService.getClients(),
+        this.searchField.valueChanges.pipe(startWith(this.searchField.value)),
+      ], // <<<<
+      (clients: any, searchTerm: string):Observable<Client[]> => {
+        return (clients.filter(
+          (client: any) =>
             searchTerm === '' ||
-            client.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            client.firstName
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
             client.lastName.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      )
+        ))
+      }
     );
   }
-  changeClients(){
-    this.clientService.updateClients({firstName:'aryadna', lastName:'dsasd'});
+  changeClients() {
+    this.clientService.updateClients({
+      firstName: 'aryadna',
+      lastName: 'dsasd',
+    });
   }
 }

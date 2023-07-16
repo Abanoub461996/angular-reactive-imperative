@@ -32,7 +32,7 @@ export class ImperativeComponent {
     // React to changes in the search term
     this.searchField.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((searchTerm) => {
+      .subscribe((searchTerm:string) => {
         this.filteredClients = this.clients.filter(
           (client) =>
             searchTerm === '' ||
